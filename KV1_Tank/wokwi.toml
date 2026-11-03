@@ -1,0 +1,7 @@
+# Wokwi for VS Code. Build with WOKWI_SIM uncommented, using
+# Arduino IDE > Sketch > Export Compiled Binary
+# (board: esp32 > "ESP32 Dev Module").
+[wokwi]
+version = 1
+firmware = 'build/esp32.esp32.esp32/KV1_Tank.ino.bin'
+elf = 'build/esp32.esp32.esp32/KV1_Tank.ino.elf'

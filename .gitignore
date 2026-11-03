@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*~
+
+# Arduino / ESP32 build output
+build/
+*.elf
+*.bin
+*.map
+
+# Wokwi local credentials
+.wokwi/
+.env
+*.local

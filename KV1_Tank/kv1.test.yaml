@@ -1,0 +1,56 @@
+# Scripted Wokwi test. Needs a build with WOKWI_SIM on and a WOKWI_CLI_TOKEN:
+#   wokwi-cli . --scenario kv1.test.yaml --timeout 30000
+# The slide switch has no automation control in Wokwi, so losing the phone can
+# only be tried by hand: slide swLink right while a stick is pushed.
+name: "KV-1 tank"
+version: 1
+author: "KV-1 Tank"
+
+steps:
+  - wait-serial: "Waiting for a phone..."
+  - wait-serial: "Phone connected"
+
+  # Tracks, slow mode
+  - set-control: { part-id: joyL, name: y, value: 1 }
+  - wait-serial: "Motors  L=170  R=170"
+  - set-control: { part-id: joyL, name: y, value: 0 }
+  - wait-serial: "Motors  L=0  R=0"
+
+  # Spin on the spot. Wokwi's x=1 is the stick's left side (4095), so right is x=-1
+  - set-control: { part-id: joyM, name: x, value: -1 }
+  - wait-serial: "Motors  L=170  R=-170"
+  - set-control: { part-id: joyM, name: x, value: 0 }
+  - wait-serial: "Motors  L=0  R=0"
+
+  # Fast mode
+  - set-control: { part-id: btnStart, name: pressed, value: 1 }
+  - wait-serial: "Fast mode"
+  - set-control: { part-id: btnStart, name: pressed, value: 0 }
+  - set-control: { part-id: joyL, name: y, value: 1 }
+  - wait-serial: "Motors  L=255  R=255"
+  - set-control: { part-id: joyL, name: y, value: 0 }
+  - wait-serial: "Motors  L=0  R=0"
+
+  # Turret
+  - set-control: { part-id: joyR, name: x, value: -1 }
+  - wait-serial: "Turret=511"
+  - set-control: { part-id: joyR, name: x, value: 0 }
+  - wait-serial: "Turret=0"
+
+  # Gun stops at both limits
+  - set-control: { part-id: joyR, name: y, value: 1 }
+  - wait-serial: "Gun at highest"
+  - set-control: { part-id: joyR, name: y, value: -1 }
+  - wait-serial: "Gun at lowest"
+  - set-control: { part-id: joyR, name: y, value: 0 }
+
+  # Cannon: the LED flashes, then the cannon reloads
+  - set-control: { part-id: btnFire, name: pressed, value: 1 }
+  - wait-serial: "Fire!"
+  - delay: 20ms
+  - expect-pin: { part-id: ledFlash, name: A, value: 1 }
+  - set-control: { part-id: btnFire, name: pressed, value: 0 }
+  - delay: 150ms
+  - expect-pin: { part-id: ledFlash, name: A, value: 0 }
+  - wait-serial: "Barrel forward"
+  - wait-serial: "Cannon ready"
